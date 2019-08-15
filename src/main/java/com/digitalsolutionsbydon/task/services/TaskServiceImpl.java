@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +38,8 @@ public class TaskServiceImpl implements TaskService
     {
         Task newTask = new Task();
         newTask.setTask(task.getTask());
-        newTask.setCompleted(task.isCompleted());
-        newTask.setCreatedat(task.getCreatedat());
+        newTask.setCompleted(false);
+        newTask.setCreatedat(LocalDateTime.now());
 
         return taskRepo.save(newTask);
     }
@@ -47,10 +48,9 @@ public class TaskServiceImpl implements TaskService
     @Override
     public Task update(Task task, long id)
     {
-        Task updatedTask = new Task();
-        updatedTask.setTask(task.getTask());
+        Task updatedTask = taskRepo.findById(id).orElseThrow(()->new EntityNotFoundException(Long.toString(id)));
+
         updatedTask.setCompleted(task.isCompleted());
-        updatedTask.setCreatedat(task.getCreatedat());
 
         return taskRepo.save(updatedTask);
     }
